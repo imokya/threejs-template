@@ -43,6 +43,11 @@ module.exports = {
           'raw-loader',
           'glslify-loader'
         ]
+      },
+
+      {
+        test: /\.(png|jpg|gif)$/i,
+        type: 'asset'
       }
       
     ]

@@ -29,6 +29,7 @@
     "webpack-dev-server": "^4.2.1"
   },
   "dependencies": {
-    "three": "^0.132.2"
+    "three": "^0.132.2",
+    "tweakpane": "^3.0.5"
   }
 }

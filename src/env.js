@@ -3,6 +3,8 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import Gradient from './gradient'
+import Particles from './particles'
+import { Pane } from 'tweakpane'
 
 
 class Env {
@@ -18,18 +20,49 @@ class Env {
   }
 
   init() {
+    this._setTime()
     this._createScene()
     this._createEvent()
     this._createControls()
+    this._createPane()
     this.render()
     this.setGradient()
+    this.setParticles()
+  }
+
+  _createPane() {
+    this.pane = new Pane()
+    this.pane.containerElem_.style.width = '320px'
+  }
+
+  _setTime() {
+    this._clock = new THREE.Clock()
+    this.time = this._clock.getElapsedTime()
+  }
+
+  setParticles() {
+    this.particles = new Particles()
   }
 
   setGradient() {
     this.gradient = new Gradient()
   }
 
+  update() {
+
+    if(this.gradient) {
+      this.gradient.update()
+    }
+
+    if(this.particles) {
+      this.particles.update()
+    }
+
+  } 
+
   render() {
+    this.time = this._clock.getElapsedTime()
+    this.update()
     this.renderer.render(this.scene, this.camera)
     requestAnimationFrame(this.render.bind(this))
   }
@@ -57,7 +90,7 @@ class Env {
     this.renderer.setPixelRatio(window.devicePixelRatio)
     this.renderer.setSize(window.innerWidth, window.innerHeight)
     this.scene = new THREE.Scene()
-    this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000)
+    this.camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 1000)
     this.camera.position.set(0, 0, 5)
     document.querySelector('#app').appendChild(this.renderer.domElement)
   }
