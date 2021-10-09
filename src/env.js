@@ -2,9 +2,11 @@
 
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import Gradient from './gradient'
-import Particles from './particles'
 import { Pane } from 'tweakpane'
+import Guify from 'guify'
+import Ring from './ring'
+import Plane from './plane'
+import Book from './book'
 
 
 class Env {
@@ -24,10 +26,24 @@ class Env {
     this._createScene()
     this._createEvent()
     this._createControls()
-    this._createPane()
+    //this._createPane()
+    this._setBook()
+    this._setRing()
+    this._setPlane()
+    
     this.render()
-    this.setGradient()
-    this.setParticles()
+  }
+
+  _setBook() {
+    this.book = new Book()    
+  }
+
+  _setPlane() {
+    this.plane = new Plane()
+  }
+
+  _setRing() {
+    this.ring = new Ring()
   }
 
   _createPane() {
@@ -40,24 +56,24 @@ class Env {
     this.time = this._clock.getElapsedTime()
   }
 
-  setParticles() {
-    this.particles = new Particles()
-  }
-
-  setGradient() {
-    this.gradient = new Gradient()
-  }
-
   update() {
 
-    if(this.gradient) {
-      this.gradient.update()
+    if(this.controls) {
+      this.controls.update()
     }
 
-    if(this.particles) {
-      this.particles.update()
+    if(this.ring && this.ring.update) {
+      this.ring.update()
+    }
+    
+    if(this.plane && this.plane.update) {
+      this.plane.update()
     }
 
+    if(this.book && this.book.update) {
+      this.book.update()
+    }
+   
   } 
 
   render() {
@@ -77,6 +93,8 @@ class Env {
 
   _createControls() {
     this.controls = new OrbitControls(this.camera, this.renderer.domElement)
+    this.controls.dampingFactor = 0.02
+    this.controls.enableDamping = true
   }
 
   _createEvent() {
@@ -87,11 +105,15 @@ class Env {
     this.renderer =  new THREE.WebGLRenderer({
       antialias: true
     })
+    //this.renderer.outputEncoding = THREE.sRGBEncoding
     this.renderer.setPixelRatio(window.devicePixelRatio)
     this.renderer.setSize(window.innerWidth, window.innerHeight)
+    this.renderer.setClearColor(0x000000, 1)
+    this.renderer.outputEncoding = THREE.sRGBEncoding
     this.scene = new THREE.Scene()
-    this.camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 1000)
-    this.camera.position.set(0, 0, 5)
+    this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 5000)
+    this.camera.position.set(0, 5, 10)
+    this.camera.lookAt(new THREE.Vector3())
     document.querySelector('#app').appendChild(this.renderer.domElement)
   }
 
